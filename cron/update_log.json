@@ -1,0 +1,28 @@
+{
+  "last_updated": "2026-03-14",
+  "updates": [
+    {
+      "date": "2026-03-13",
+      "status": "full_rebuild",
+      "new_events": 44,
+      "message": "Complete map rebuilt with all historical events Mar 2-13"
+    },
+    {
+      "date": "2026-03-14",
+      "status": "updated",
+      "new_events": 5,
+      "zones": [
+        "beirut",
+        "south",
+        "ground",
+        "hvt",
+        "bridge"
+      ],
+      "numbers": {
+        "killed": null,
+        "wounded": null,
+        "displaced": null
+      }
+    }
+  ]
+}
