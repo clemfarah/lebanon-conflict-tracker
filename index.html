@@ -1,0 +1,917 @@
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+<!-- Perplexity Computer Attribution -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lebanon Conflict Tracker 2026 — Israeli Military Operations</title>
+<meta name="description" content="Interactive map tracking Israeli military strikes, ground operations, and events in Lebanon 2026">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --text-xs: clamp(0.75rem,0.7rem + 0.25vw,0.875rem);
+  --text-sm: clamp(0.875rem,0.8rem + 0.35vw,1rem);
+  --text-base: clamp(1rem,0.95rem + 0.25vw,1.125rem);
+  --text-lg: clamp(1.125rem,1rem + 0.75vw,1.5rem);
+  --text-xl: clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem;
+  --radius-sm:.375rem; --radius-md:.5rem; --radius-lg:.75rem; --radius-full:9999px;
+  --transition:180ms cubic-bezier(0.16,1,0.3,1);
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+}
+[data-theme="dark"],:root {
+  --bg:#0f0e0c; --surface:#161412; --surface-2:#1c1a17; --surface-off:#231f1b;
+  --divider:#2a2622; --border:#333028;
+  --text:#e8e4dc; --muted:#8a857a; --faint:#504c45; --inverse:#1a1714;
+  --primary:#e05a2b; --primary-h:#f06a38; --primary-m:rgba(224,90,43,.15); --primary-b:rgba(224,90,43,.3);
+  --strike:#ff4d4d; --ground:#f59e0b; --disp:#8b5cf6; --hvt:#ff2222;
+  --phos:#fbbf24; --unifil:#60a5fa; --hezbollah:#22c55e; --infra:#fb923c;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4); --shadow-md:0 4px 16px rgba(0,0,0,.5); --shadow-lg:0 12px 40px rgba(0,0,0,.6);
+}
+[data-theme="light"] {
+  --bg:#f4f1eb; --surface:#f9f7f2; --surface-2:#fff; --surface-off:#edeae3;
+  --divider:#ddd9d0; --border:#c8c4b8;
+  --text:#1a1714; --muted:#6b6760; --faint:#a8a49c; --inverse:#f9f7f2;
+  --primary:#c0440f; --primary-h:#d04f18; --primary-m:rgba(192,68,15,.1); --primary-b:rgba(192,68,15,.25);
+  --strike:#dc2626; --ground:#d97706; --disp:#7c3aed; --hvt:#b91c1c;
+  --phos:#d97706; --unifil:#2563eb; --hezbollah:#16a34a; --infra:#ea580c;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.1); --shadow-md:0 4px 16px rgba(0,0,0,.12); --shadow-lg:0 12px 40px rgba(0,0,0,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:var(--text-sm);color:var(--text);background:var(--bg);min-height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* HEADER */
+.hdr{position:relative;z-index:1000;background:var(--surface);border-bottom:1px solid var(--divider);padding:var(--space-3) var(--space-6);display:flex;align-items:center;gap:var(--space-4);flex-shrink:0;box-shadow:var(--shadow-md)}
+.hdr-logo{display:flex;align-items:center;gap:var(--space-3)}
+.logo-svg{width:36px;height:36px;flex-shrink:0}
+.hdr-title{font-family:var(--font-display);font-size:var(--text-base);font-weight:700;line-height:1.2}
+.hdr-sub{font-size:var(--text-xs);color:var(--muted);margin-top:1px}
+.hdr-div{width:1px;height:32px;background:var(--divider);margin:0 var(--space-2)}
+.hdr-stats{display:flex;gap:var(--space-6);flex:1}
+.stat-v{font-family:var(--font-display);font-size:var(--text-base);font-weight:700;color:var(--primary);line-height:1}
+.stat-l{font-size:var(--text-xs);color:var(--muted);white-space:nowrap}
+.hdr-ctrl{display:flex;align-items:center;gap:var(--space-2);margin-left:auto}
+.btn-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--muted);transition:all var(--transition)}
+.btn-icon:hover{background:var(--surface-off);color:var(--text)}
+.live-badge{display:flex;align-items:center;gap:var(--space-2);background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-full);padding:var(--space-1) var(--space-3);font-size:var(--text-xs);font-weight:600;color:#ef4444;letter-spacing:.05em}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#ef4444;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;height:calc(100dvh - 61px)}
+
+/* SIDEBAR */
+.sidebar{width:380px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--divider);display:flex;flex-direction:column;overflow:hidden;z-index:100}
+.tabs{display:flex;border-bottom:1px solid var(--divider);background:var(--surface-off);flex-shrink:0}
+.tab-btn{flex:1;padding:var(--space-3) var(--space-4);font-size:var(--text-xs);font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid transparent;transition:all var(--transition)}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);background:var(--surface)}
+.tab-pane{display:none;flex-direction:column;overflow:hidden;flex:1}
+.tab-pane.active{display:flex}
+
+/* TIMELINE */
+.tl-scroll{overflow-y:auto;flex:1;padding:var(--space-4);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.tl-scroll::-webkit-scrollbar{width:4px}
+.tl-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tl-day{margin-bottom:var(--space-3);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--divider);transition:border-color var(--transition);cursor:pointer}
+.tl-day:hover{border-color:var(--primary-b)}
+.tl-day.active{border-color:var(--primary)}
+.day-hdr{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);background:var(--surface-2)}
+.day-date{font-family:var(--font-display);font-size:var(--text-sm);font-weight:700}
+.day-badge{margin-left:auto;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-full);padding:2px var(--space-2);font-size:var(--text-xs);font-weight:600;color:#ef4444}
+.day-evts{padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:var(--space-2);background:var(--surface)}
+.evt{display:flex;align-items:flex-start;gap:var(--space-2);padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);background:var(--surface-off);border-left:3px solid transparent;transition:all var(--transition);cursor:pointer}
+.evt:hover{background:var(--surface-2)}
+.evt.strike{border-left-color:var(--strike)}
+.evt.ground{border-left-color:var(--ground)}
+.evt.disp{border-left-color:var(--disp)}
+.evt.hvt{border-left-color:var(--hvt)}
+.evt.phos{border-left-color:var(--phos)}
+.evt.unifil{border-left-color:var(--unifil)}
+.evt.hezbollah{border-left-color:var(--hezbollah)}
+.evt.infra{border-left-color:var(--infra)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dot.strike{background:var(--strike)} .dot.ground{background:var(--ground)} .dot.disp{background:var(--disp)}
+.dot.hvt{background:var(--hvt)} .dot.phos{background:var(--phos)} .dot.unifil{background:var(--unifil)}
+.dot.hezbollah{background:var(--hezbollah)} .dot.infra{background:var(--infra)}
+.evt-text{font-size:var(--text-xs);color:var(--muted);line-height:1.5;flex:1}
+.evt-text strong{color:var(--text);font-weight:600}
+
+/* STATS PANEL */
+.stats-panel{padding:var(--space-4);flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-bottom:var(--space-5)}
+.sc{background:var(--surface-2);border:1px solid var(--divider);border-radius:var(--radius-lg);padding:var(--space-4)}
+.sc-v{font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;line-height:1;margin-bottom:var(--space-1)}
+.sc-l{font-size:var(--text-xs);color:var(--muted);line-height:1.3}
+.sc.danger .sc-v{color:var(--strike)} .sc.warn .sc-v{color:var(--ground)}
+.sc.info .sc-v{color:var(--unifil)} .sc.purple .sc-v{color:var(--disp)}
+.sec-title{font-family:var(--font-display);font-size:var(--text-xs);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-3);margin-top:var(--space-5)}
+.legend-list{display:flex;flex-direction:column;gap:var(--space-2)}
+.leg{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);background:var(--surface-2);border-radius:var(--radius-md);border:1px solid var(--divider)}
+.leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.leg-name{font-size:var(--text-xs);font-weight:600;flex:1}
+.leg-note{font-size:var(--text-xs);color:var(--muted)}
+.prog-row{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-4)}
+.prog-hdr{display:flex;justify-content:space-between;align-items:baseline}
+.prog-label{font-size:var(--text-xs);color:var(--muted)}
+.prog-val{font-size:var(--text-sm);font-weight:700;font-variant-numeric:tabular-nums}
+.prog-bg{height:6px;background:var(--surface-off);border-radius:var(--radius-full);overflow:hidden}
+.prog-fill{height:100%;border-radius:var(--radius-full);transition:width 1s cubic-bezier(0.16,1,0.3,1)}
+
+/* MAP */
+.map-wrap{flex:1;position:relative;overflow:hidden}
+#map{width:100%;height:100%;background:#0d1117}
+
+/* Leaflet overrides */
+.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--radius-md)!important;overflow:hidden}
+.leaflet-control-zoom a{background:var(--surface)!important;color:var(--text)!important;border-color:var(--divider)!important;font-weight:600!important;width:32px!important;height:32px!important;line-height:32px!important;font-size:18px!important}
+.leaflet-control-zoom a:hover{background:var(--surface-2)!important;color:var(--primary)!important}
+.leaflet-control-attribution{background:var(--surface)!important;color:var(--faint)!important;font-size:10px!important;border-top-left-radius:var(--radius-sm)!important}
+.leaflet-popup-content-wrapper{background:var(--surface-2)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:var(--radius-lg)!important;box-shadow:var(--shadow-lg)!important;padding:0!important;overflow:hidden}
+.leaflet-popup-tip-container{display:none}
+.leaflet-popup-content{margin:0!important}
+.pop-body{padding:var(--space-4);min-width:260px;max-width:320px}
+.pop-tag{display:inline-flex;align-items:center;gap:var(--space-1);border-radius:var(--radius-full);padding:2px var(--space-2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-2)}
+.pop-tag.strike{background:rgba(255,77,77,.15);color:var(--strike)}
+.pop-tag.ground{background:rgba(245,158,11,.15);color:var(--ground)}
+.pop-tag.hvt{background:rgba(255,34,34,.15);color:var(--hvt)}
+.pop-tag.disp{background:rgba(139,92,246,.15);color:var(--disp)}
+.pop-tag.phos{background:rgba(251,191,36,.15);color:var(--phos)}
+.pop-tag.unifil{background:rgba(96,165,250,.15);color:var(--unifil)}
+.pop-tag.hezbollah{background:rgba(34,197,94,.15);color:var(--hezbollah)}
+.pop-tag.infra{background:rgba(251,146,60,.15);color:var(--infra)}
+.pop-title{font-family:var(--font-display);font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-1);line-height:1.3}
+.pop-meta{font-size:var(--text-xs);color:var(--muted);margin-bottom:var(--space-3);display:flex;align-items:center;gap:var(--space-2)}
+.pop-meta::before{content:'';display:block;width:3px;height:3px;background:var(--primary);border-radius:50%}
+.pop-desc{font-size:var(--text-xs);color:var(--muted);line-height:1.6}
+.pop-cas{margin-top:var(--space-3);padding:var(--space-2) var(--space-3);background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-md);font-size:var(--text-xs);color:#ef4444;font-weight:600}
+.pop-src{margin-top:var(--space-2);font-size:10px;color:var(--faint)}
+
+/* Map markers */
+.mk{display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid rgba(255,255,255,.12);cursor:pointer;transition:transform var(--transition);animation:mkin .4s cubic-bezier(0.16,1,0.3,1) both}
+@keyframes mkin{from{transform:scale(0) translateY(-10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.mk:hover{transform:scale(1.25)}
+.mk.strike{background:rgba(255,77,77,.85);box-shadow:0 0 10px rgba(255,77,77,.5)}
+.mk.ground{background:rgba(245,158,11,.85);box-shadow:0 0 10px rgba(245,158,11,.5)}
+.mk.hvt{background:rgba(255,34,34,.92);box-shadow:0 0 16px rgba(255,34,34,.7)}
+.mk.disp{background:rgba(139,92,246,.85);box-shadow:0 0 10px rgba(139,92,246,.5)}
+.mk.phos{background:rgba(251,191,36,.9);box-shadow:0 0 10px rgba(251,191,36,.5)}
+.mk.unifil{background:rgba(96,165,250,.85);box-shadow:0 0 10px rgba(96,165,250,.4)}
+.mk.hezbollah{background:rgba(34,197,94,.85);box-shadow:0 0 10px rgba(34,197,94,.5)}
+.mk.infra{background:rgba(251,146,60,.88);box-shadow:0 0 10px rgba(251,146,60,.5)}
+
+/* Date filter */
+.date-filter{position:absolute;top:var(--space-4);left:50%;transform:translateX(-50%);z-index:500;display:flex;gap:var(--space-1);flex-wrap:wrap;justify-content:center;background:var(--surface);border:1px solid var(--divider);border-radius:var(--radius-full);padding:var(--space-1);box-shadow:var(--shadow-md);max-width:calc(100% - 32px)}
+.df-btn{padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;color:var(--muted);transition:all var(--transition);white-space:nowrap}
+.df-btn:hover{color:var(--text);background:var(--surface-off)}
+.df-btn.active{background:var(--primary);color:#fff}
+
+/* Map legend overlay */
+.map-legend{position:absolute;bottom:var(--space-6);right:var(--space-4);background:var(--surface);border:1px solid var(--divider);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);z-index:500;box-shadow:var(--shadow-md);min-width:180px}
+.ml-title{font-size:var(--text-xs);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:var(--space-2)}
+.ml-row{display:flex;align-items:center;gap:var(--space-2);font-size:11px;color:var(--muted);margin-bottom:3px}
+.ml-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Updated badge */
+.upd-badge{font-size:var(--text-xs);color:var(--muted);padding:2px var(--space-2)}
+
+@media(max-width:768px){
+  .sidebar{width:100%;height:50%;flex-direction:column;border-right:none;border-bottom:1px solid var(--divider)}
+  .app{flex-direction:column}
+  .hdr-stats{display:none}
+  .date-filter{top:var(--space-2)}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">
+    <svg class="logo-svg" viewBox="0 0 36 36" fill="none" aria-label="Lebanon Conflict Tracker">
+      <rect width="36" height="36" rx="8" fill="#1c1a17"/>
+      <path d="M18 6L28 12V24L18 30L8 24V12L18 6Z" stroke="#e05a2b" stroke-width="1.5" fill="none"/>
+      <circle cx="18" cy="18" r="3" fill="#e05a2b"/>
+      <line x1="18" y1="8" x2="18" y2="14" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+      <line x1="18" y1="22" x2="18" y2="28" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+      <line x1="9.5" y1="12.5" x2="14.5" y2="15.5" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+      <line x1="21.5" y1="20.5" x2="26.5" y2="23.5" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+      <line x1="26.5" y1="12.5" x2="21.5" y2="15.5" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+      <line x1="14.5" y1="20.5" x2="9.5" y2="23.5" stroke="#e05a2b" stroke-width="1.5" opacity=".6"/>
+    </svg>
+    <div>
+      <div class="hdr-title">Lebanon Conflict Tracker</div>
+      <div class="hdr-sub">Israeli Military Operations — 2026</div>
+    </div>
+  </div>
+  <div class="hdr-div"></div>
+  <div class="hdr-stats">
+    <div><div class="stat-v" id="hdr-killed">773+</div><div class="stat-l">Killed</div></div>
+    <div><div class="stat-v" id="hdr-wounded">1,933+</div><div class="stat-l">Wounded</div></div>
+    <div><div class="stat-v" id="hdr-displaced">850K+</div><div class="stat-l">Displaced</div></div>
+    <div><div class="stat-v">12 days</div><div class="stat-l">Duration</div></div>
+  </div>
+  <div class="hdr-ctrl">
+    <span class="upd-badge">Updated Mar 13</span>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <button class="btn-icon" data-theme-toggle aria-label="Toggle theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="timeline">Timeline</button>
+      <button class="tab-btn" data-tab="stats">Stats & Legend</button>
+    </div>
+    <div class="tab-pane active" id="tab-timeline">
+      <div class="tl-scroll" id="tl-scroll"></div>
+    </div>
+    <div class="tab-pane" id="tab-stats">
+      <div class="stats-panel">
+        <div class="stat-grid">
+          <div class="sc danger"><div class="sc-v">773+</div><div class="sc-l">Killed by Israeli strikes</div></div>
+          <div class="sc warn"><div class="sc-v">1,933+</div><div class="sc-l">Wounded</div></div>
+          <div class="sc purple"><div class="sc-v">850K+</div><div class="sc-l">Displaced (14% of Lebanon)</div></div>
+          <div class="sc info"><div class="sc-v">103+</div><div class="sc-l">Children killed</div></div>
+        </div>
+        <div class="sec-title">Casualty Breakdown</div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">Children killed</span><span class="prog-val">103+</span></div><div class="prog-bg"><div class="prog-fill" style="width:13%;background:var(--strike)"></div></div></div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">Women killed</span><span class="prog-val">62+</span></div><div class="prog-bg"><div class="prog-fill" style="width:8%;background:var(--disp)"></div></div></div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">Hezbollah fighters (IDF est.)</span><span class="prog-val">350+</span></div><div class="prog-bg"><div class="prog-fill" style="width:45%;background:var(--hezbollah)"></div></div></div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">Lebanese Armed Forces</span><span class="prog-val">3+</span></div><div class="prog-bg"><div class="prog-fill" style="width:1%;background:var(--ground)"></div></div></div>
+        <div class="sec-title">UN Trajectory Count</div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">From Israel (projectiles + air)</span><span class="prog-val">3,056</span></div><div class="prog-bg"><div class="prog-fill" style="width:69%;background:var(--strike)"></div></div></div>
+        <div class="prog-row"><div class="prog-hdr"><span class="prog-label">From Lebanon (Hezbollah)</span><span class="prog-val">1,387+</span></div><div class="prog-bg"><div class="prog-fill" style="width:31%;background:var(--hezbollah)"></div></div></div>
+        <div class="sec-title">Map Legend</div>
+        <div class="legend-list">
+          <div class="leg"><div class="leg-dot" style="background:var(--strike)"></div><div class="leg-name">Airstrike</div><div class="leg-note">Primary</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--ground)"></div><div class="leg-name">Ground Operation</div><div class="leg-note">Southern LB</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--hvt)"></div><div class="leg-name">High-Value Target</div><div class="leg-note">Commanders</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--phos)"></div><div class="leg-name">White Phosphorus</div><div class="leg-note">Illegal</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--disp)"></div><div class="leg-name">Mass Displacement</div><div class="leg-note">Evac orders</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--unifil)"></div><div class="leg-name">UNIFIL / UN Strike</div><div class="leg-note">Peacekeepers</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--hezbollah)"></div><div class="leg-name">Hezbollah Attack</div><div class="leg-note">Into Israel</div></div>
+          <div class="leg"><div class="leg-dot" style="background:var(--infra)"></div><div class="leg-name">Infrastructure</div><div class="leg-note">Bridges/media</div></div>
+        </div>
+        <div class="sec-title">Sources</div>
+        <p style="font-size:var(--text-xs);color:var(--muted);line-height:1.6">Lebanese Ministry of Health · Al Jazeera · Reuters · BBC · Wikipedia · UN OCHA/IOM · UNIFIL · Norwegian Refugee Council · Daily Sabah · Jerusalem Post</p>
+      </div>
+    </div>
+  </aside>
+
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="date-filter" id="date-filter">
+      <button class="df-btn active" data-filter="all">All</button>
+      <button class="df-btn" data-filter="2026-03-02">Mar 2</button>
+      <button class="df-btn" data-filter="2026-03-03">Mar 3</button>
+      <button class="df-btn" data-filter="2026-03-04">Mar 4</button>
+      <button class="df-btn" data-filter="2026-03-05">Mar 5</button>
+      <button class="df-btn" data-filter="2026-03-06">Mar 6</button>
+      <button class="df-btn" data-filter="2026-03-07">Mar 7</button>
+      <button class="df-btn" data-filter="2026-03-08">Mar 8</button>
+      <button class="df-btn" data-filter="2026-03-09">Mar 9</button>
+      <button class="df-btn" data-filter="2026-03-10">Mar 10</button>
+      <button class="df-btn" data-filter="2026-03-11">Mar 11</button>
+      <button class="df-btn" data-filter="2026-03-12">Mar 12</button>
+      <button class="df-btn" data-filter="2026-03-13">Mar 13</button>
+      <button class="df-btn" data-filter="2026-03-14">Mar 14</button>
+    </div>
+    <div class="map-legend">
+      <div class="ml-title">Event Types</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--strike)"></div>Airstrike</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--ground)"></div>Ground Op</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--hvt)"></div>HV Target</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--phos)"></div>White Phosphorus</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--disp)"></div>Displacement</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--unifil)"></div>UNIFIL Strike</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--hezbollah)"></div>Hezbollah Attack</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--infra)"></div>Infrastructure</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// EVENT DATA — Complete historical record Mar 2–13, 2026
+// Sources: Lebanese Health Ministry, Al Jazeera, Reuters,
+//          BBC, Wikipedia, UNIFIL, UN OCHA
+// ═══════════════════════════════════════════════════════════
+const EVENTS = [
+
+  // ── MARCH 2 ──
+  { id:1, date:"2026-03-02", type:"strike",
+    loc:"Southern Beirut (Haret Hreik)", lat:33.845, lng:35.497,
+    title:"Opening Beirut Strike — 3am",
+    desc:"Israeli jets bombed Beirut at 3am targeting senior Hezbollah figures. Haret Hreik, home of Hezbollah's leadership, hit first. 50 villages across Southern Lebanon and Beqaa Valley issued evacuation orders simultaneously.",
+    cas:"20 killed, 91 wounded (Beirut suburbs alone)",
+    src:"Lebanese Health Ministry / Al Jazeera" },
+
+  { id:2, date:"2026-03-02", type:"hvt",
+    loc:"Southern Beirut", lat:33.852, lng:35.503,
+    title:"Hezbollah Intel Chief Hussein Makled Killed",
+    desc:"IDF confirmed killing Hussein Makled, head of Hezbollah's intelligence headquarters. Palestinian Islamic Jihad commander Adham Adnan al-Othman also killed in Beirut's southern suburbs. Naim Qassem targeted but not confirmed hit.",
+    cas:"Senior Hezbollah and PIJ commanders eliminated",
+    src:"IDF / Reuters" },
+
+  { id:3, date:"2026-03-02", type:"strike",
+    loc:"Southern Lebanon (multiple towns)", lat:33.28, lng:35.35,
+    title:"South Lebanon Opening Strikes",
+    desc:"Multiple strikes across southern Lebanon. Death toll at end of day: 52 killed, 154 injured. Evacuation orders to 50 villages in south Lebanon and Beqaa Valley. Residents fleeing roads in scenes similar to 2024.",
+    cas:"52 killed, 154 wounded (day total)",
+    src:"Lebanese Health Ministry" },
+
+  { id:4, date:"2026-03-02", type:"disp",
+    loc:"South Lebanon & Beqaa Valley", lat:33.52, lng:35.68,
+    title:"Mass Evacuation Orders — 50 Villages",
+    desc:"Israel issued simultaneous evacuation orders to civilians in 50 villages across Southern Lebanon and the Beqaa Valley. Roads immediately congested as families fled north.",
+    cas:"Tens of thousands begin fleeing",
+    src:"IDF / Al Jazeera" },
+
+  // ── MARCH 3 ──
+  { id:5, date:"2026-03-03", type:"infra",
+    loc:"Al-Manar TV HQ, Beirut (Haret Hreik)", lat:33.862, lng:35.512,
+    title:"Al-Manar TV Headquarters Destroyed",
+    desc:"Israeli airstrikes destroyed Al-Manar TV headquarters in Beirut — Hezbollah's main television broadcaster. Strike carried out after Hezbollah fired missiles and drones at three Israeli bases: Ramat David Airbase, Meron monitoring base, and Camp Yitzhak.",
+    cas:"Media infrastructure destroyed",
+    src:"IDF / Al Jazeera" },
+
+  { id:6, date:"2026-03-03", type:"ground",
+    loc:"Southern Lebanon border area", lat:33.19, lng:35.43,
+    title:"Ground Incursion Begins",
+    desc:"IDF ordered forces to seize 'strategic areas' in southern Lebanon. Start of limited ground incursion. Nearby Lebanese towns ordered to evacuate. IDF said it would 'secure additional strategic positions.'",
+    cas:"No initial IDF casualties reported",
+    src:"IDF / Reuters" },
+
+  { id:7, date:"2026-03-03", type:"phos",
+    loc:"Yohmor, Beqaa Valley", lat:33.68, lng:35.72,
+    title:"White Phosphorus Strike — Yohmor",
+    desc:"Israel struck Yohmor in the Beqaa Valley with white phosphorus munitions, illegal under international law. Multiple homes caught fire. Documented by UNIFIL observers on the ground.",
+    cas:"Multiple homes destroyed by fire",
+    src:"UNIFIL / Human Rights Watch" },
+
+  // ── MARCH 4 ──
+  { id:8, date:"2026-03-04", type:"infra",
+    loc:"Al-Manar / Al-Nour Radio, Beirut", lat:33.868, lng:35.508,
+    title:"All Hezbollah Broadcast Infrastructure Destroyed",
+    desc:"Israel eliminated Hezbollah's remaining communications centers — Al-Manar TV station and Al-Nour radio station. All Hezbollah broadcasting in Lebanon wiped out. Strikes also hit villages in southern Lebanon used as Hezbollah bases.",
+    cas:"Complete broadcast blackout for Hezbollah",
+    src:"IDF / BBC" },
+
+  { id:9, date:"2026-03-04", type:"ground",
+    loc:"Kfar Kila / Houla / Khiam area", lat:33.12, lng:35.48,
+    title:"IDF Enters 5 Southern Villages",
+    desc:"UNIFIL confirmed Israeli soldiers entered and occupied: Kfar Kila, Houla, Kfar Shouba, Yaroun, and Khiam. Urgent evacuation order issued for all of south Lebanon — residents told to move north of the Litani River. Hezbollah anti-tank fire caused moderate injuries to two Israeli soldiers (first IDF casualties).",
+    cas:"First IDF injuries: 2 soldiers (moderate)",
+    src:"UNIFIL / Reuters" },
+
+  { id:10, date:"2026-03-04", type:"strike",
+    loc:"Jamla–Saisoun, Daraa Governorate, Syria", lat:32.98, lng:36.12,
+    title:"IDF Incursion into Southern Syria",
+    desc:"Israel shelled the area between Jamla and Saisoun in Syria's Daraa Governorate and arrested four Syrian civilians. Israel accused Syria of deploying units to Golan Heights and demanded Syria prevent Iraqi militias from crossing toward the Golan.",
+    cas:"4 Syrian civilians arrested",
+    src:"Syrian state media / Reuters" },
+
+  // ── MARCH 5 ──
+  { id:11, date:"2026-03-05", type:"hvt",
+    loc:"Southern Beirut suburbs", lat:33.842, lng:35.492,
+    title:"Hamas Official Killed in Beirut",
+    desc:"Israel struck and killed a senior Hamas official in Beirut's southern suburbs. Multiple additional strikes in south Beirut (Bourj el-Barajneh, Hadath, Haret Hreik, Chiyah). Brother of late Muhammad Hussein Fadlallah and his wife also killed in Haret Hreik.",
+    cas:"Hamas commander eliminated",
+    src:"IDF / Lebanese NNA" },
+
+  { id:12, date:"2026-03-05", type:"disp",
+    loc:"Bourj el-Barajneh / Hadath / Haret Hreik / Chiyah", lat:33.855, lng:35.509,
+    title:"250,000 Beirut Residents Ordered to Evacuate",
+    desc:"IDF issued immediate evacuation notice to four major southern Beirut suburbs: Bourj el-Barajneh, Hadath, Haret Hreik, and Chiyah. Approximately 250,000 residents told to move north and east immediately.",
+    cas:"~250,000 residents affected by evac orders",
+    src:"IDF / UN OCHA" },
+
+  { id:13, date:"2026-03-05", type:"hezbollah",
+    loc:"Northern Israel (Haifa area)", lat:32.82, lng:35.00,
+    title:"210+ Hezbollah Missiles Into Israel",
+    desc:"UNIFIL reported monitoring over 210 Hezbollah missiles fired into Israel since March 2. Targets included military installations in northern Israel. No Israeli fatalities from Hezbollah fire at this stage.",
+    cas:"16 Israelis injured in Hezbollah attacks",
+    src:"UNIFIL" },
+
+  // ── MARCH 6 ──
+  { id:14, date:"2026-03-06", type:"strike",
+    loc:"Beirut city — 10 high-rise buildings", lat:33.877, lng:35.518,
+    title:"10 Hezbollah High-Rise HQs Bombed",
+    desc:"After issuing advance warnings, Israel struck Hezbollah HQ in ten high-rise buildings in Beirut. Drone warehouses also targeted. Hezbollah launched rockets toward Golan Heights and Haifa on the same day.",
+    cas:"Major civilian displacement; 8 IDF soldiers wounded",
+    src:"IDF / Al Jazeera" },
+
+  { id:15, date:"2026-03-06", type:"unifil",
+    loc:"Al-Qaouzah, Bint Jbeil", lat:33.12, lng:35.44,
+    title:"UNIFIL HQ Struck — UN Peacekeepers Injured",
+    desc:"Two Israeli missile strikes directly hit UNIFIL battalion headquarters in al-Qaouzah, Bint Jbeil district. Three Ghanaian UN peacekeepers were wounded. Strong international condemnation followed.",
+    cas:"3 Ghanaian UNIFIL peacekeepers wounded",
+    src:"UNIFIL / UN" },
+
+  { id:16, date:"2026-03-06", type:"disp",
+    loc:"Tyre (Sur), South Lebanon", lat:33.27, lng:35.20,
+    title:"Tyre Evacuation Order",
+    desc:"Evacuation notice issued to Zqouq El Mufdi, Tyre. Followed by 'Save your lives' reminders and warning notices to stay away from homes. Hezbollah projectile near Lebanese border also injured 8 Israeli soldiers (5 severely), including son of Finance Minister Bezalel Smotrich.",
+    cas:"8 IDF soldiers injured (5 severe)",
+    src:"IDF / Lebanese NNA" },
+
+  // ── MARCH 7 ──
+  { id:17, date:"2026-03-07", type:"strike",
+    loc:"Nabi Chit, Beqaa Valley", lat:33.82, lng:35.77,
+    title:"Nabi Chit — 41+ Killed",
+    desc:"One of the deadliest single strikes of the conflict. Overnight airstrikes on the eastern town of Nabi Chit. Israeli forces reportedly also carried out operation related to the 1986 MIA Ron Arad. Lebanese Armed Forces and General Security personnel killed.",
+    cas:"41+ killed (incl. 3 Lebanese Army, 1 General Security), 40 wounded",
+    src:"Lebanese Health Ministry / Reuters" },
+
+  { id:18, date:"2026-03-07", type:"hezbollah",
+    loc:"Northern Israel", lat:32.95, lng:35.30,
+    title:"Hezbollah Missile Barrage",
+    desc:"Hezbollah launched multiple missile and rocket salvoes into northern Israel. Israeli defenses intercepted majority of projectiles. Ongoing cross-border exchanges continue.",
+    cas:"No Israeli fatalities confirmed",
+    src:"IDF" },
+
+  // ── MARCH 8 ──
+  { id:19, date:"2026-03-08", type:"hvt",
+    loc:"Ramada Plaza Hotel, Rawsheh, West Beirut", lat:33.893, lng:35.478,
+    title:"5 IRGC Quds Force Commanders Killed",
+    desc:"Airstrike on the Ramada Plaza Hotel in the Rawsheh district of predominantly Sunni west Beirut. Five senior commanders of Iran's IRGC Quds Force Lebanon Corps killed, who were planning attacks on Israel. Netanyahu warned of 'many surprises' ahead.",
+    cas:"5 IRGC/Quds Force senior commanders killed",
+    src:"IDF / Reuters" },
+
+  { id:20, date:"2026-03-08", type:"hezbollah",
+    loc:"Southern Lebanon (Puma APC ambush)", lat:33.18, lng:35.52,
+    title:"2 IDF Soldiers Killed — Hezbollah Ambush",
+    desc:"Hezbollah rocket attack in southern Lebanon damaged a Puma armored vehicle and Caterpillar D9 bulldozer, killing two Israeli soldiers — the first Israeli combat deaths of the conflict. IDF confirmed the incident.",
+    cas:"2 IDF soldiers killed (first combat deaths)",
+    src:"IDF / Al Jazeera" },
+
+  { id:21, date:"2026-03-08", type:"strike",
+    loc:"Aysha Bakkar, West Beirut", lat:33.888, lng:35.498,
+    title:"Hamas / Islamic Group Office Struck",
+    desc:"IDF struck in the predominantly working-class Sunni neighbourhood of Aysha Bakkar in west Beirut. Target identified as either a Hamas member (Ahmad Abdallah) or offices of the Islamic Group (Lebanese Muslim Brotherhood branch). IDF widening its targeting to previously untouched areas.",
+    cas:"Casualties unclear",
+    src:"IDF / FDD Analysis" },
+
+  { id:22, date:"2026-03-08", type:"hezbollah",
+    loc:"RAF Akrotiri, Cyprus (attempted)", lat:34.58, lng:32.99,
+    title:"Hezbollah Drones Target British Bases in Cyprus",
+    desc:"Cyprus FM Constantinos Kombos confirmed Hezbollah launched explosive drones from Lebanon targeting British military bases in Cyprus. Drones intercepted before reaching UK Sovereign Base Areas.",
+    cas:"Intercepted — no casualties",
+    src:"Cyprus FM / BBC" },
+
+  // ── MARCH 9 ──
+  { id:23, date:"2026-03-09", type:"ground",
+    loc:"Nabi Sheet, Eastern Lebanon", lat:33.83, lng:35.80,
+    title:"15-Helicopter Airborne Assault — Nabi Sheet",
+    desc:"15 Israeli military helicopters inserted troops near Nabi Sheet in eastern Lebanon, arriving from the Syrian border. Hezbollah fighters engaged the landing force. Deepest incursion into Lebanon's interior yet.",
+    cas:"Clashes reported; no confirmed IDF casualties",
+    src:"Hezbollah / Al Jazeera" },
+
+  { id:24, date:"2026-03-09", type:"strike",
+    loc:"Al-Qard Al-Hassan network — nationwide", lat:33.86, lng:35.50,
+    title:"Hezbollah Financial Network — 30+ Sites Struck",
+    desc:"IDF struck over 30 locations of Al-Qard Al-Hassan, a US-sanctioned nonprofit institution that finances Hezbollah. Amnesty International had previously flagged such strikes as potential war crimes against civilian infrastructure.",
+    cas:"Financial infrastructure destroyed across Lebanon",
+    src:"IDF / Amnesty International" },
+
+  { id:25, date:"2026-03-09", type:"strike",
+    loc:"Al-Qlayaa, South Lebanon", lat:33.30, lng:35.52,
+    title:"Maronite Catholic Priest Killed",
+    desc:"A double strike on a house in Al-Qlayaa killed Lebanese Maronite Catholic priest Father Pierre al-Rahi. Locals mourned in the town municipality hall. Strikes targeting non-Hezbollah residential areas drew condemnation.",
+    cas:"Catholic priest and civilians killed",
+    src:"Lebanese NNA / BBC" },
+
+  { id:26, date:"2026-03-09", type:"hezbollah",
+    loc:"Gush Dan, Central Israel", lat:32.07, lng:34.82,
+    title:"Hezbollah Missiles Reach Central Israel",
+    desc:"Hezbollah missiles fired at Gush Dan (greater Tel Aviv area) lightly wounded 16 people. An 'isolated failure' allowed two missiles to impact central Israel without interception or warning sirens, per IDF.",
+    cas:"16 Israelis lightly wounded",
+    src:"IDF / FDD" },
+
+  // ── MARCH 10 ──
+  { id:27, date:"2026-03-10", type:"strike",
+    loc:"Almaj, Chara, Srifa — South Lebanon", lat:33.55, lng:35.42,
+    title:"Overnight Strikes — South Lebanon Towns",
+    desc:"Israeli aircraft struck Almaj, Chara, and Srifa overnight. New wave of attacks across southern and eastern Lebanon throughout the day. IDF expanding target list beyond Hezbollah strongholds.",
+    cas:"Ongoing cumulative toll",
+    src:"Lebanese NNA / Al Jazeera" },
+
+  { id:28, date:"2026-03-10", type:"strike",
+    loc:"Beqaa Valley overnight", lat:33.72, lng:35.85,
+    title:"Beqaa Valley Night Strikes",
+    desc:"Airstrikes across parts of the Bekaa Valley overnight into March 10. Targeting Hezbollah weapons storage and logistics routes used to move materiel from Syria.",
+    cas:"Casualties ongoing",
+    src:"Lebanese NNA" },
+
+  { id:29, date:"2026-03-10", type:"ground",
+    loc:"Khiam area, South Lebanon", lat:33.17, lng:35.56,
+    title:"3 Merkava Tanks Hit — Khiam Ambush",
+    desc:"Hezbollah claimed to have ambushed Israeli forces near Khiam and hit 3 Merkava tanks, which were seen ablaze. Israeli ground forces expanding presence and attempting to extend buffer zone in south Lebanon.",
+    cas:"3 Israeli Merkava tanks reportedly destroyed",
+    src:"Hezbollah / ACLED" },
+
+  { id:30, date:"2026-03-10", type:"disp",
+    loc:"Sidon (Saida), South Lebanon", lat:33.56, lng:35.37,
+    title:"Sidon & 4 Villages Evacuation Orders",
+    desc:"Evacuation warnings issued to Tyre and Sidon — residents told to move at least 300m from military targets. Also issued for: Arnoun, Yohmor, Zawtar El Charqiyeh, Zawtar El Gharbiyeh. Residents of Aalma El Chaeb escorted to Tyre by LAF and UNIFIL.",
+    cas:"800,000+ total displaced by this date",
+    src:"IDF / UN IOM" },
+
+  { id:31, date:"2026-03-10", type:"hezbollah",
+    loc:"Haifa area, Northern Israel", lat:32.82, lng:35.00,
+    title:"First Coordinated Hezbollah–Iran Strike",
+    desc:"Hezbollah and Iran launched first confirmed coordinated strike: cluster munition salvoes targeting Haifa area simultaneously with Iranian missile barrage. Reuters cited senior Israeli defence official confirming coordination. Triggered widespread shelter alarms.",
+    cas:"Casualties in Israel reported",
+    src:"Reuters / IDF" },
+
+  // ── MARCH 11 ──
+  { id:32, date:"2026-03-11", type:"hvt",
+    loc:"South Lebanon", lat:33.24, lng:35.38,
+    title:"Iranian Commander Ali Musallam Tabaja Killed",
+    desc:"IDF confirmed overnight airstrikes killed Iranian IRGC commander Ali Musallam Tabaja. Evacuation notices issued to six additional villages in south Lebanon. IDF's campaign against Iranian military presence in Lebanon continues.",
+    cas:"Iranian commander eliminated; 634 total killed at this point",
+    src:"IDF / Lebanese NNA" },
+
+  { id:33, date:"2026-03-11", type:"strike",
+    loc:"Tyre (Sur), South Lebanon coast", lat:33.275, lng:35.195,
+    title:"ICRC Volunteer Killed in Tyre",
+    desc:"Airstrikes on the southern coastal city of Tyre. International Committee of the Red Cross (ICRC) volunteer Youssef Assaf was killed while conducting humanitarian rescue operations in the city. IOM director 'gravely alarmed.'",
+    cas:"ICRC humanitarian worker killed",
+    src:"ICRC / Al Jazeera" },
+
+  { id:34, date:"2026-03-11", type:"disp",
+    loc:"Lebanon (national overview)", lat:33.72, lng:35.65,
+    title:"816,700 Officially Displaced — Shelters at 90%",
+    desc:"Lebanese Ministry of Social Affairs registered 816,700 displaced people. 90% of government shelters at capacity. UN migration agency estimates nearly 1 million total including unregistered. 200,000+ children displaced. Families sleeping in cars and on streets.",
+    cas:"816,700+ registered displaced; 125,000 in shelters",
+    src:"Lebanese Social Affairs Ministry / IOM" },
+
+  // ── MARCH 12 ──
+  { id:35, date:"2026-03-12", type:"strike",
+    loc:"Bashoura, Central Beirut", lat:33.893, lng:35.503,
+    title:"Strikes Reach Historic Central Beirut",
+    desc:"Israeli strikes hit Bashoura neighbourhood in central Beirut — a major escalation reaching the city's historic centre for the first time. Black smoke clouds rose across the city. IDF also issued evacuation order for a building in Zuqa al-Jadid, central Beirut.",
+    cas:"Escalation; cumulative toll reaches 687+",
+    src:"Al Jazeera / BBC" },
+
+  { id:36, date:"2026-03-12", type:"strike",
+    loc:"Beirut Corniche (seafront)", lat:33.895, lng:35.480,
+    title:"'Double-Tap' Strike on Displaced Civilians",
+    desc:"Israeli 'double-tap' airstrike hit displaced civilians sheltering on the Beirut Corniche seafront. The second strike came as people rushed to help victims of the first. UN IOM Director Amy Pope called it a 'grave alarm.' Strikes also hit the Bashoura neighbourhood.",
+    cas:"8 killed, dozens wounded — all civilians displaced from south",
+    src:"Al Jazeera / UN IOM" },
+
+  { id:37, date:"2026-03-12", type:"hezbollah",
+    loc:"Northern Israel (200-rocket salvo)", lat:32.92, lng:35.12,
+    title:"200+ Hezbollah Rockets Into Northern Israel",
+    desc:"Hezbollah launched approximately 200 rockets in a co-ordinated barrage into northern Israel, in a simultaneous operation with Iran. Explosions heard overnight in northern cities. IDF retaliated with fresh strikes on Beirut suburbs.",
+    cas:"Multiple injuries in northern Israel",
+    src:"BBC / IDF" },
+
+  // ── MARCH 13 ──
+  { id:38, date:"2026-03-13", type:"infra",
+    loc:"Zrarieh Bridge, Litani River", lat:33.38, lng:35.36,
+    title:"Litani River Bridge Destroyed",
+    desc:"IAF struck and destroyed the Zrarieh Bridge over the Litani River in southern Lebanon — cutting a key crossing used by civilians and military logistics. First confirmed Israeli attack on major civilian infrastructure in the current campaign. IDF noted this was the 50th major structure demolished.",
+    cas:"Infrastructure destroyed; ~50 Hezbollah structures demolished total",
+    src:"IDF / Jerusalem Post / Reuters" },
+
+  { id:39, date:"2026-03-13", type:"strike",
+    loc:"Bourj Hammoud, NE Beirut suburbs", lat:33.894, lng:35.543,
+    title:"New Beirut Neighbourhoods Struck",
+    desc:"Drone struck a residential building in Bourj Hammoud, a northeastern suburb of Beirut not previously targeted. Separate strikes hit Jnah and Nabaa neighbourhoods. Israel widening its aerial campaign to districts outside Hezbollah-controlled areas.",
+    cas:"Civilian casualties reported",
+    src:"Al Jazeera" },
+
+  { id:40, date:"2026-03-13", type:"strike",
+    loc:"Arki, near Sidon", lat:33.57, lng:35.39,
+    title:"Arki Strike — 9 Killed Including 5 Children",
+    desc:"Israeli strike on the town of Arki near Sidon killed nine people, including five children. One of the deadliest single incidents targeting civilians in the conflict to date. Lebanese Health Ministry confirmed the toll.",
+    cas:"9 killed (5 children), 9+ wounded",
+    src:"Lebanese Health Ministry / Al Jazeera" },
+
+  { id:41, date:"2026-03-13", type:"strike",
+    loc:"Fawwar, South Lebanon", lat:33.49, lng:35.38,
+    title:"Fawwar Strike — 8 Killed",
+    desc:"Israeli airstrike on Fawwar in south Lebanon killed eight people. Strike came amid a broader wave of attacks across southern Lebanon on March 13.",
+    cas:"8 killed",
+    src:"Lebanese Health Ministry / Reuters" },
+
+  { id:42, date:"2026-03-13", type:"strike",
+    loc:"Southern Lebanon (ambulance)", lat:33.35, lng:35.28,
+    title:"Ambulance Struck in South Lebanon",
+    desc:"An Israeli strike hit an ambulance in southern Lebanon, continuing a pattern of attacks on emergency response vehicles that has drawn condemnation from the International Committee of the Red Cross.",
+    cas:"Medics casualties",
+    src:"Lebanese Health Ministry / ICRC" },
+
+  { id:43, date:"2026-03-13", type:"hvt",
+    loc:"Dahiyeh, Southern Beirut", lat:33.848, lng:35.494,
+    title:"Hezbollah Radwan Force Commander Killed",
+    desc:"IDF eliminated Abu Ali Riyan, commander of Hezbollah's elite Radwan Force who oversaw southern Lebanon military operations. IDF noted it has now killed over 350 Hezbollah militants including 'key commanders' since March 2.",
+    cas:"Radwan Force commander eliminated; 350+ Hezbollah fighters killed total",
+    src:"IDF / Jerusalem Post" },
+
+  { id:44, date:"2026-03-13", type:"disp",
+    loc:"Beirut (leaflet drop)", lat:33.888, lng:35.510,
+    title:"Gaza-Scale Threat Leaflets Dropped Over Beirut",
+    desc:"Israel dropped leaflets over Beirut warning of 'Gaza-scale devastation' — referencing destruction of 81% of Gaza structures per UN Satellite Centre. Leaflets urged disarming Hezbollah and included QR codes (Lebanese army warned these were Israeli intelligence recruitment tools). Defence Minister Katz threatened 'rising costs' for Lebanese government.",
+    cas:"Psychological terror campaign; 773+ killed total by this date",
+    src:"Al Jazeera / IDF / Lebanese Army" },
+
+  { id:45, date:"2026-03-05", type:"hvt",
+    loc:"Beddawi Refugee Camp, Tripoli", lat:34.478, lng:35.852,
+    title:"Hamas Official Killed — Beddawi Camp, Tripoli",
+    desc:"Israeli strike on the Beddawi Palestinian refugee camp near Tripoli — in northern Lebanon far from the main front. A Hamas official was among those killed, suggesting a targeted assassination. The strike marked Israel extending its reach to Lebanon's second-largest city for the first time in this conflict.",
+    cas:"2 killed (incl. Hamas official)", src:"Al Jazeera / Lebanese Health Ministry" },
+
+  { id:46, date:"2026-03-14", type:"strike",
+    loc:"Beirut", lat:33.887, lng:35.511,
+    title:"Beirut Strikes — March 14, 2026",
+    desc:"Beirut Strikes reported on March 14, 2026. Hamas urges key ally Iran to halt attacks on Gulf states. All six crew members killed after US refuelling plane crashes in Iraq",
+    cas:null, src:"Al Jazeera / RSS" },
+  { id:47, date:"2026-03-14", type:"strike",
+    loc:"Southern Lebanon", lat:33.282, lng:35.312,
+    title:"South Lebanon Strikes — March 14, 2026",
+    desc:"South Lebanon Strikes reported on March 14, 2026.",
+    cas:null, src:"Al Jazeera / RSS" },
+  { id:48, date:"2026-03-14", type:"ground",
+    loc:"Southern Lebanon", lat:33.174, lng:35.488,
+    title:"Ground Operations — March 14, 2026",
+    desc:"Ground Operations reported on March 14, 2026.",
+    cas:null, src:"Al Jazeera / RSS" },
+  { id:49, date:"2026-03-14", type:"hvt",
+    loc:"Lebanon", lat:33.858, lng:35.538,
+    title:"High-Value Target Eliminated — March 14, 2026",
+    desc:"High-Value Target Eliminated reported on March 14, 2026.",
+    cas:null, src:"Al Jazeera / RSS" },
+  { id:50, date:"2026-03-14", type:"strike",
+    loc:"Lebanon Infrastructure", lat:33.918, lng:35.456,
+    title:"Infrastructure Strike — March 14, 2026",
+    desc:"Infrastructure Strike reported on March 14, 2026.",
+    cas:null, src:"Al Jazeera / RSS" },
+
+];
+
+// ═══════════════════════════════════════════════════════════
+// TIMELINE DATA — Day-by-day sidebar entries
+// ═══════════════════════════════════════════════════════════
+const TIMELINE = [
+  { date:"March 2, 2026", key:"2026-03-02", badge:"52 killed", events:[
+    { type:"strike",    text:"<strong>3am Beirut bombing</strong> — jets strike Haret Hreik; 50-village evacuation orders issued" },
+    { type:"hvt",       text:"<strong>Intel Chief Makled killed</strong> — Hezbollah intelligence head eliminated; PIJ commander also killed" },
+    { type:"strike",    text:"<strong>South Lebanon strikes</strong> — multiple towns hit; 52 killed, 154 wounded by day's end" },
+    { type:"disp",      text:"<strong>Mass evacuation begins</strong> — 50 villages in south & Beqaa Valley ordered to flee" },
+  ]},
+  { date:"March 3, 2026", key:"2026-03-03", badge:null, events:[
+    { type:"infra",     text:"<strong>Al-Manar TV HQ bombed</strong> — Hezbollah's main broadcaster destroyed" },
+    { type:"ground",    text:"<strong>Ground incursion begins</strong> — IDF ordered to seize 'strategic areas' in south Lebanon" },
+    { type:"phos",      text:"<strong>White phosphorus on Yohmor</strong> — illegal use; homes set ablaze in Beqaa Valley" },
+  ]},
+  { date:"March 4, 2026", key:"2026-03-04", badge:null, events:[
+    { type:"infra",     text:"<strong>All Hezbollah broadcasts destroyed</strong> — Al-Manar TV + Al-Nour Radio eliminated" },
+    { type:"ground",    text:"<strong>IDF enters 5 villages</strong> — Kfar Kila, Houla, Kfar Shouba, Yaroun, Khiam occupied" },
+    { type:"disp",      text:"<strong>Litani River evacuation order</strong> — all south Lebanon residents told to flee north" },
+    { type:"strike",    text:"<strong>IDF strikes into Syria</strong> — Daraa Governorate shelled; 4 Syrians arrested" },
+  ]},
+  { date:"March 5, 2026", key:"2026-03-05", badge:null, events:[
+    { type:"hvt",       text:"<strong>Hamas official killed</strong> — senior figure eliminated in Beirut southern suburbs" },
+    { type:"disp",      text:"<strong>250,000 evacuated from Beirut</strong> — 4 southern suburbs issued emergency evac orders" },
+    { type:"hezbollah", text:"<strong>210+ Hezbollah missiles into Israel</strong> — UNIFIL reports cumulative count since Mar 2" },
+    { type:"hvt",       text:"<strong>Beddawi camp struck near Tripoli</strong> — Hamas official killed; Israel hits Lebanon's north for first time" },
+  ]},
+  { date:"March 6, 2026", key:"2026-03-06", badge:null, events:[
+    { type:"strike",    text:"<strong>10 Hezbollah high-rises bombed</strong> — Beirut HQ buildings struck after advance warnings" },
+    { type:"unifil",    text:"<strong>UNIFIL HQ struck</strong> — 3 Ghanaian UN peacekeepers wounded in Bint Jbeil" },
+    { type:"disp",      text:"<strong>Tyre evacuation issued</strong> — residents told to flee coastal city" },
+  ]},
+  { date:"March 7, 2026", key:"2026-03-07", badge:"41 killed", events:[
+    { type:"strike",    text:"<strong>Nabi Chit massacre</strong> — 41+ killed in Beqaa Valley overnight strike; 3 Lebanese Army soldiers dead" },
+    { type:"hezbollah", text:"<strong>Hezbollah rocket barrage</strong> — salvoes into northern Israel" },
+  ]},
+  { date:"March 8, 2026", key:"2026-03-08", badge:"2 IDF killed", events:[
+    { type:"hvt",       text:"<strong>5 IRGC commanders killed</strong> — Quds Force Lebanon Corps struck at Ramada Hotel, West Beirut" },
+    { type:"hezbollah", text:"<strong>First IDF combat deaths</strong> — 2 Israeli soldiers killed in Hezbollah ambush (Puma APC)" },
+    { type:"strike",    text:"<strong>Hamas/Islamic Group struck</strong> — Aysha Bakkar neighbourhood, West Beirut" },
+    { type:"hezbollah", text:"<strong>Hezbollah drones target Cyprus</strong> — British military bases targeted; drones intercepted" },
+  ]},
+  { date:"March 9, 2026", key:"2026-03-09", badge:"486 cumul.", events:[
+    { type:"ground",    text:"<strong>15-helicopter assault near Nabi Sheet</strong> — airborne insertion from Syrian border" },
+    { type:"strike",    text:"<strong>Al-Qard Al-Hassan struck</strong> — 30+ Hezbollah financial network locations destroyed" },
+    { type:"strike",    text:"<strong>Catholic priest killed</strong> — Father Pierre al-Rahi killed in Al-Qlayaa double strike" },
+    { type:"hezbollah", text:"<strong>Hezbollah hits central Israel</strong> — missiles reach Gush Dan (Tel Aviv area); 16 wounded" },
+  ]},
+  { date:"March 10, 2026", key:"2026-03-10", badge:null, events:[
+    { type:"strike",    text:"<strong>Overnight strikes</strong> — Almaj, Chara, Srifa and Beqaa Valley hit" },
+    { type:"ground",    text:"<strong>3 Merkava tanks hit</strong> — Hezbollah ambush near Khiam; tanks seen ablaze" },
+    { type:"disp",      text:"<strong>Sidon evacuation + 4 villages</strong> — 800,000+ total displaced" },
+    { type:"hezbollah", text:"<strong>First coordinated Hezbollah–Iran strike</strong> — cluster munitions + Iranian missiles on Haifa" },
+  ]},
+  { date:"March 11, 2026", key:"2026-03-11", badge:"634 cumul.", events:[
+    { type:"hvt",       text:"<strong>Iranian commander Tabaja killed</strong> — IRGC commander eliminated overnight" },
+    { type:"strike",    text:"<strong>ICRC volunteer killed</strong> — Youssef Assaf killed during humanitarian work in Tyre" },
+    { type:"disp",      text:"<strong>816,700 displaced</strong> — shelters at 90% capacity; 200K+ children" },
+  ]},
+  { date:"March 12, 2026", key:"2026-03-12", badge:"687 cumul.", events:[
+    { type:"strike",    text:"<strong>Central Beirut struck</strong> — Bashoura neighbourhood; first time historic city centre targeted" },
+    { type:"strike",    text:"<strong>Double-tap on seafront</strong> — displaced civilians killed on Corniche; 8 dead" },
+    { type:"hezbollah", text:"<strong>200+ rockets from Hezbollah</strong> — co-ordinated barrage with Iran into northern Israel" },
+  ]},
+  { date:"March 13, 2026", key:"2026-03-13", badge:"773 cumul.", events:[
+    { type:"infra",     text:"<strong>Litani Bridge destroyed</strong> — Zrarieh Bridge demolished; 1st major civilian infrastructure hit" },
+    { type:"hvt",       text:"<strong>Radwan Force commander killed</strong> — Abu Ali Riyan eliminated; 350+ Hezbollah dead total" },
+    { type:"strike",    text:"<strong>Arki: 9 killed inc. 5 children</strong> — deadliest civilian strike of the conflict" },
+    { type:"strike",    text:"<strong>Fawwar: 8 killed</strong> — south Lebanon town struck" },
+    { type:"strike",    text:"<strong>New Beirut suburbs hit</strong> — Bourj Hammoud, Jnah, Nabaa reached for first time" },
+    { type:"disp",      text:"<strong>Gaza-scale leaflets dropped</strong> — Israel threatens total devastation if Hezbollah not disarmed" },
+  ]},
+  {
+    date: "March 14, 2026", key: "2026-03-14",
+    casualtyTag: null,
+    events: [
+      { type: "strike", text: "<strong>Beirut Strikes — March 14, 2026</strong> — Hamas urges key ally Iran to halt attacks on Gulf states" },
+      { type: "strike", text: "<strong>South Lebanon Strikes — March 14, 2026</strong> — All six crew members killed after US refuelling plane crashes in Iraq" },
+      { type: "ground", text: "<strong>Ground Operations — March 14, 2026</strong> — Bodies of 84 Iranian sailors killed in US torpedo strike to be repatriated" },
+      { type: "hvt", text: "<strong>High-Value Target Eliminated — March 14, 2026</strong> — 'Follow the smoke': BBC spends day with emergency teams as Israel strikes south Lebanon" },
+      { type: "strike", text: "<strong>Infrastructure Strike — March 14, 2026</strong> — Emirati minister tells BBC Iran must end strikes on Gulf" },
+    ]
+  },
+
+];
+
+// ═══════════════════════════════════════════════════════════
+// MAP INIT
+// ═══════════════════════════════════════════════════════════
+const map = L.map('map',{ center:[33.6,35.5], zoom:9, zoomControl:true });
+let darkTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains:'abcd', maxZoom:19
+}).addTo(map);
+let lightTile = null;
+
+let allMarkers = [];
+
+const TYPE_LABELS = {
+  strike:"Airstrike", ground:"Ground Op", hvt:"HV Target Killed",
+  disp:"Displacement", phos:"White Phosphorus", unifil:"UNIFIL Struck",
+  hezbollah:"Hezbollah Attack", infra:"Infrastructure"
+};
+
+function mkIcon(type, big=false){
+  const sz = big ? 18 : 14;
+  return L.divIcon({
+    className:'',
+    html:`<div class="mk ${type}" style="width:${sz}px;height:${sz}px;"></div>`,
+    iconSize:[sz,sz], iconAnchor:[sz/2,sz/2], popupAnchor:[0,-sz/2-4]
+  });
+}
+
+function buildPopup(e){
+  return `<div class="pop-body">
+    <div class="pop-tag ${e.type}">${TYPE_LABELS[e.type]||e.type}</div>
+    <div class="pop-title">${e.title}</div>
+    <div class="pop-meta">${e.date} &nbsp; ${e.loc}</div>
+    <div class="pop-desc">${e.desc}</div>
+    ${e.cas?`<div class="pop-cas">⚠ ${e.cas}</div>`:''}
+    ${e.src?`<div class="pop-src">Source: ${e.src}</div>`:''}
+  </div>`;
+}
+
+function renderMarkers(filter){
+  allMarkers.forEach(m=>m.remove());
+  allMarkers=[];
+  const filtered = filter==='all' ? EVENTS : EVENTS.filter(e=>e.date===filter);
+  filtered.forEach((evt,i)=>{
+    const big = ['hvt','disp'].includes(evt.type);
+    const m = L.marker([evt.lat,evt.lng],{icon:mkIcon(evt.type,big)});
+    m.bindPopup(buildPopup(evt),{maxWidth:340});
+    setTimeout(()=>{m.addTo(map); allMarkers.push(m);}, i*30);
+  });
+}
+
+renderMarkers('all');
+
+// ─ Date filter ─
+function setFilter(val){
+  renderMarkers(val);
+  if(val==='all'){
+    map.flyTo([33.6,35.5],9,{duration:.8});
+  } else {
+    const pts = EVENTS.filter(e=>e.date===val);
+    if(pts.length){
+      const bounds = L.latLngBounds(pts.map(e=>[e.lat,e.lng]));
+      map.fitBounds(bounds,{padding:[60,60],maxZoom:12});
+    }
+  }
+}
+
+document.querySelectorAll('.df-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const v=btn.dataset.filter;
+    setFilter(v);
+    document.querySelectorAll('.tl-day').forEach(d=>{
+      if(v==='all'){d.classList.remove('active');}
+      else{
+        const match=d.dataset.date===v;
+        d.classList.toggle('active',match);
+        if(match) d.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+    });
+  });
+});
+
+// ─ Timeline render ─
+const tlScroll = document.getElementById('tl-scroll');
+TIMELINE.forEach(day=>{
+  const el=document.createElement('div');
+  el.className='tl-day'; el.dataset.date=day.key;
+  el.innerHTML=`
+    <div class="day-hdr">
+      <div class="day-date">${day.date}</div>
+      ${day.badge?`<div class="day-badge">${day.badge}</div>`:''}
+    </div>
+    <div class="day-evts">
+      ${day.events.map(ev=>`
+        <div class="evt ${ev.type}">
+          <div class="dot ${ev.type}"></div>
+          <div class="evt-text">${ev.text}</div>
+        </div>`).join('')}
+    </div>`;
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.tl-day').forEach(d=>d.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.df-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===day.key));
+    setFilter(day.key);
+  });
+  tlScroll.appendChild(el);
+});
+
+// ─ Tabs ─
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+  });
+});
+
+// ─ Theme toggle ─
+(function(){
+  const toggle=document.querySelector('[data-theme-toggle]');
+  const root=document.documentElement;
+  let theme='dark';
+  function apply(t){
+    theme=t;
+    root.setAttribute('data-theme',t);
+    if(t==='light'){
+      if(!lightTile) lightTile=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19});
+      if(map.hasLayer(darkTile)) map.removeLayer(darkTile);
+      lightTile.addTo(map);
+    } else {
+      if(lightTile&&map.hasLayer(lightTile)) map.removeLayer(lightTile);
+      if(!map.hasLayer(darkTile)) darkTile.addTo(map);
+    }
+    if(toggle) toggle.innerHTML=t==='dark'
+      ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+      :'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  }
+  apply('dark');
+  if(toggle) toggle.addEventListener('click',()=>apply(theme==='dark'?'light':'dark'));
+})();
+</script>
+
+<footer style="position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:999;font-size:var(--text-xs);color:var(--faint);pointer-events:none;white-space:nowrap">
+  Sources: Lebanese Health Ministry · Al Jazeera · Reuters · BBC · UN · UNIFIL &nbsp;|&nbsp;
+  <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer" style="color:var(--faint);pointer-events:all">Created with Perplexity Computer</a>
+</footer>
+</body>
+</html>
